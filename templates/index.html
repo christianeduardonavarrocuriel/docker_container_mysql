@@ -1,0 +1,25 @@
+$def with(registros)
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MySQL y Python</title>
+    </head>
+    <body>
+        <h1>Lista de personas</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                $for persona in registros:
+                    <tr>
+                        <td>$persona[0]</td>
+                        <td>$persona[1]</td>
+                    </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
