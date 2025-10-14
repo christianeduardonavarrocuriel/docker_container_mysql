@@ -7,7 +7,7 @@ services:
       MYSQL_ROOT_PASSWORD: toor
       MYSQL_DATABASE: agenda
     ports:
-      - 3306:3306
+      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -18,7 +18,7 @@ services:
     container_name: webapp
     restart: always
     ports:
-      - 8080:8080
+      - "8080:8080"
     depends_on:
       - db
     environment:
@@ -26,6 +26,20 @@ services:
       DB_USER: root
       DB_PASSWORD: toor
       DB_NAME: agenda
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8081:80" 
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: toor
+      UPLOAD_LIMIT: 100M # Tamaño del archivo que se sube (es decir, el tamaño maximo para subir algun archivo o base de datos)
 
 volumes:
   mysql_data:
