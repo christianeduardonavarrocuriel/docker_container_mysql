@@ -1,32 +1,42 @@
 services:
+  # Servicio de base de datos MySQL
   db:
     image: mysql:8.0
     container_name: mysql_db
     restart: always
     environment:
+      # Credenciales y base de datos inicial
       MYSQL_ROOT_PASSWORD: toor
       MYSQL_DATABASE: agenda
     ports:
+      # Exponer MySQL en el puerto 3306 del host
       - "3306:3306"
     volumes:
+      # Volumen persistente para los datos de MySQL
       - mysql_data:/var/lib/mysql
+      # Script SQL para inicializar la base de datos al arrancar
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  # Servicio de aplicación web en Python (web.py)
   web:
     build: .
     image: webapp:1.0
     container_name: webapp
     restart: always
     ports:
+      # La app escucha en el puerto 8080 dentro del contenedor
       - "8080:8080"
     depends_on:
+      # Asegura que la base de datos se levante antes de la app
       - db
     environment:
+      # Variables usadas en app.py para conectarse a MySQL
       DB_HOST: db
       DB_USER: root
       DB_PASSWORD: toor
       DB_NAME: agenda
 
+  # Panel de administración web para MySQL
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin
@@ -34,12 +44,15 @@ services:
     depends_on:
       - db
     ports:
+      # Exponer phpMyAdmin en el puerto 8081 del host
       - "8081:80" 
     environment:
       PMA_HOST: db
       PMA_USER: root
       PMA_PASSWORD: toor
-      UPLOAD_LIMIT: 100M # Tamaño del archivo que se sube (es decir, el tamaño maximo para subir algun archivo o base de datos)
+      # Tamaño máximo para subir archivos o bases de datos
+      UPLOAD_LIMIT: 100M
 
 volumes:
+  # Volumen nombrado para persistir datos de MySQL
   mysql_data:
